@@ -1012,28 +1012,27 @@ def solution(left, right):
 
 def process(locs: str):
     left, right = [], []
-    locs = locs.replace('\n', '   ')
-    locs = locs.split('   ')
-    locs.pop()
 
-    while locs:
-        heapq.heappush(left, int(locs.pop()))
-        heapq.heappush(right, int(locs.pop()))
-    # n = len(locs)
-    # i = 0
+    n = len(locs)
+    i = 0
 
-    # while i < n:
-    #     if locs[i] == " ":
-    #         i += 1
-    #         continue
+    while i < n:
+        if locs[i] == " ":
+            i += 1
+            continue
+    
+        first_num = locs[i : i + 5]
+        second_num = locs[i + 8 : i + 13]
 
-    #     heapq.heappush(left, int(locs[i : i + 6]))
-    #     heapq.heappush(right, int(locs[i + 9 : i + 15]))
-    #     i += 15
+        heapq.heappush(left, int(first_num))
+        heapq.heappush(right, int(second_num))
+        i += 14
     
     return left, right
 
+
 left, right = process(input)
+# print(left, right)
 res = solution(left, right)
 
 print(res)
