@@ -1020,6 +1020,7 @@ class Solution:
         return res
     
     def safe(self, report: list[int]):
+        print(report)
         prev = report[0]
         n = len(report)
 
@@ -1038,6 +1039,40 @@ class Solution:
             prev = report[i]
         return True
 
+
+    def safety_dampener(self, report: list[int]):
+        '''
+        the abilitiy to ignore just one unsafe level opens the doors for 
+        alot more complexity
+        
+        ascending/not ascending can flip flop 
+        '''
+        n = len(report)
+        prev = report[0]
+
+        if prev < report[1]:
+            ascending = True
+            if self.safe(report[1:]):
+                return True
+        elif prev > report[1]:
+            ascending = False
+            if self.safe(report[1:]):
+                return True
+        else:
+            return self.safe(report[1:])
+
+        for i in range(1, n):
+            without_curr = report[:i] + report[i + 1:]
+            without_prev = report[: i - 1] + report[i: ]
+
+            if ascending and (report[i] < prev or not abs(report[i] - prev) in range(1, 4)):
+                return self.safe(without_curr) or self.safe(without_prev)
+            elif not ascending and (report[i] > prev or not abs(prev - report[i]) in range(1, 4)):
+                return self.safe(without_curr) or self.safe(without_prev)            
+            prev = report[i]
+        return True
+
+
     def num_safe(self, reports: list[list[int]]):
         '''
         linear scan on each line
@@ -1051,8 +1086,25 @@ class Solution:
         
         return safe
 
+    def num_safe_dampener(self, reports: list[list[int]]):
+        '''
+        linear scan on each line
+        '''
+        safe = 0
+
+        for report in reports:
+            safety = self.safety_dampener(report)
+            safe += int(safety)
+            print(safety, report)
+        
+        return safe
+
+
 if __name__ == "__main__":
     s = Solution(data)
     data = s.process()
-    safety = s.num_safe(data)
+    # safety = s.num_safe(data)
+    safety = s.num_safe_dampener(data)
     print(safety)
+
+    # 280 is too low!
