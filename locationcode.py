@@ -1001,38 +1001,52 @@ input = '''88450   63363
 '''
 
 import heapq
+class Solution:
+    def __init__(self, data):
+        self.data = data
 
-def solution(left, right):
-    diff = 0
+    def solution(self, left: list[int], right: list[int]):
+        heapq.heapify(left)
+        heapq.heapify(right)
+        diff = 0
 
-    while left and right:
-        diff += abs(heapq.heappop(left) - heapq.heappop(right))
-    
-    return diff
+        while left and right:
+            diff += abs(heapq.heappop(left) - heapq.heappop(right))
+        
+        return diff
 
-def process(locs: str):
-    left, right = [], []
+    def process(self):
+        left, right = [], []
+        data = self.data.split('\n')
+        data.pop() # assumes empty string at end
 
-    n = len(locs)
-    i = 0
+        for tuple in data:
+            l, r = tuple.split('   ')
+            left.append(int(l))
+            right.append(int(r))
 
-    while i < n:
-        if locs[i] == " ":
-            i += 1
-            continue
-    
-        first_num = locs[i : i + 5]
-        second_num = locs[i + 8 : i + 13]
+        return left, right
 
-        heapq.heappush(left, int(first_num))
-        heapq.heappush(right, int(second_num))
-        i += 14
-    
-    return left, right
+    def freq(self, left, right):
+        '''
+        set up a hashmap to map freq
+        '''
+        freq = {}
 
+        for id in left:
+            freq[id] = 0
+        
+        for id in right:
+            if id in freq:
+                freq[id] += 1
 
-left, right = process(input)
-# print(left, right)
-res = solution(left, right)
+        res = 0
 
-print(res)
+        for key, value in freq.items():
+            res += (key * value)
+        return res 
+
+if __name__ == "__main__":
+    s = Solution(input)
+    left, right = s.process()
+    print(s.solution(left, right))
