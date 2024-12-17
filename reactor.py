@@ -1003,55 +1003,56 @@ data = '''
 
 '''
 iterate through each row in the matrix and figure out how many of them are safe
-safe is when the difference between each item in each row is 1-2 in the same direction
+safe is when the difference between each item in each row is 1-3 in the same direction
 '''
-
-def process(input: str):
-    matrix = []
-
-    input = input.split('\n')
-    input.pop()
-    input.pop(0)
-
-    for line in input:
-        line_arr = line.split(' ')
-        line_arr = list(map(lambda x: int(x), line_arr))
-        matrix.append(line_arr)
-    return matrix
-
-def safe_levels(data: list[list[int]]) -> int:
-    safe = 0
-
-    for level in data:
-        prev = level[0]
-        n = len(level)
-        inc, dec = True, True
-
-        for i in range(1, n):
-            if not (level[i] != prev and (level[i] == prev + 1 or level[i] == prev + 2 or level[i] == prev + 3)):
-                inc = False
-                break
-            prev = level[i]
-        
-        prev = level[0]
-        for i in range(1, n):
-            if not (level[i] != prev and (level[i] == prev - 1 or level[i] == prev - 2 or level[i] == prev + 3)):
-                dec = False
-                # print(prev, "broke", level[i])
-                break
-            prev = level[i]
-        
-        # print(f'level {level} is {bool(inc ^ dec)}')
-        safe += int(inc ^ dec)
+class Solution:
+    def __init__(self, data):
+        self.data = data
     
-    return safe
+    def process(self):
+        data = self.data.split('\n')
+        data.pop()
+        res = []
 
+        for line in data:
+            if line != '':
+                res.append(list(map(lambda x: int(x), line.split(' '))))
+        return res
+    
+    def safe(self, report: list[int]):
+        prev = report[0]
+        n = len(report)
 
+        if prev < report[1]:
+            ascending = True
+        elif prev > report[1]:
+            ascending = False
+        else:
+            return False
+        
+        for i in range(1, n):
+            if ascending and (report[i] < prev or not abs(report[i] - prev) in range(1, 4)):
+                return False
+            elif not ascending and (report[i] > prev or not abs(prev - report[i]) in range(1, 4)):
+                return False
+            prev = report[i]
+        return True
 
+    def num_safe(self, reports: list[list[int]]):
+        '''
+        linear scan on each line
+        '''
+        safe = 0
 
-data = process(data)
-res = safe_levels(data)
-if res <= 138:
-    print("Too low")
-else:
-    print(res)
+        for report in reports:
+            safety = self.safe(report)
+            safe += int(safety)
+            print(safety, report)
+        
+        return safe
+
+if __name__ == "__main__":
+    s = Solution(data)
+    data = s.process()
+    safety = s.num_safe(data)
+    print(safety)
