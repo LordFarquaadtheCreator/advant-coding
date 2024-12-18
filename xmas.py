@@ -263,22 +263,38 @@ class Solution:
         print()
         # print(idx)
         return idx == -1
+    
+    def x_mas(self, i, j):
+        if (i - 1) < 0 or (i + 1) >= self.rows or (j - 1) < 0 or (j + 1) >= self.cols:
+            return False
+
+        first_word = self.data[i - 1][j - 1] + self.data[i][j] + self.data[i + 1][j + 1]
+        second_word = self.data[i - 1][j + 1] + self.data[i][j] + self.data[i + 1][j - 1]
+        candidates = set(["MAS", "SAM"])
+
+        if first_word not in candidates or second_word not in candidates:
+            return False
+        return True
+        
 
     def n_xmas(self) -> int:
         joly = 0
         for i in range(self.rows):
             for j in range(self.cols):
-                if self.data[i][j] == 'X':
-                    joly += int(self.search_diag_in_order(i, j))
-                    joly += int(self.search_diag_left_in_order(i, j))
-                    joly += int(self.search_horizontal_in_order(i, j))
-                    joly += int(self.search_vertical_in_order(i, j))
+                # if self.data[i][j] == 'X':
+                #     joly += int(self.search_diag_in_order(i, j))
+                #     joly += int(self.search_diag_left_in_order(i, j))
+                #     joly += int(self.search_horizontal_in_order(i, j))
+                #     joly += int(self.search_vertical_in_order(i, j))
 
-                if self.data[i][j] == 'S':
-                    joly += int(self.search_diag_reverse(i, j))
-                    joly += int(self.search_diag_left_reverse(i, j))
-                    joly += int(self.search_horizontal_reverse(i, j))
-                    joly += int(self.search_vertical_reverse(i, j))
+                # if self.data[i][j] == 'S':
+                #     joly += int(self.search_diag_reverse(i, j))
+                #     joly += int(self.search_diag_left_reverse(i, j))
+                #     joly += int(self.search_horizontal_reverse(i, j))
+                #     joly += int(self.search_vertical_reverse(i, j))
+
+                if self.data[i][j] == "A":
+                    joly += int(self.x_mas(i, j))
         return joly
 
 if __name__ == "__main__":
