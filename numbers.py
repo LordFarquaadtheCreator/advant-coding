@@ -1420,9 +1420,9 @@ class Solution:
             if not self.prune(arr):
                 self.safe_pages.append(arr)
     
-    def sum_middles(self):
+    def sum_middles(self, pages):
         summation = 0
-        for arr in self.safe_pages:
+        for arr in pages:
             summation += arr[len(arr) // 2]
         print(summation)
         # 11886 too large!
@@ -1433,4 +1433,4 @@ if __name__ == "__main__":
     s = Solution(orders, pages)
     s.make_dict()
     s.remove_invalid()
-    s.sum_middles()
+    s.sum_middles(s.safe_pages)
