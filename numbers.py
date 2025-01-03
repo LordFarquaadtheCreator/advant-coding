@@ -1381,6 +1381,7 @@ class Solution:
         self.order = self.process_order(order)
         self.pages = self.process_pages(pages)
         self.safe_pages = []
+        self.unsafe_pages = []
         self.orderings = defaultdict(set)
     
     def process_order(self, order):
@@ -1419,18 +1420,61 @@ class Solution:
         for arr in self.pages:
             if not self.prune(arr):
                 self.safe_pages.append(arr)
+            else:
+                self.unsafe_pages.append(self.fix_invalid(arr))
+    
+    def place_behind(self, arr, num):
+        '''
+        places `num` behind the smallest number in it's orderings
+        returns array with number in new position
+        '''
+        if self.orderings[num] == set():
+            print('womp womp')
+            return arr
+        
+        del(arr[arr.index(num)])
+
+        values = self.orderings[num]
+        minimum = None
+
+        for value in values:
+            if minimum is None:
+                minimum = value
+            elif value in arr and value < minimum:
+                minimum = value
+
+        # have the smallest number to place num behind
+        n = len(arr)
+        i = 0
+        while i < n:
+            if arr[i] == minimum:
+                break
+            i += 1
+        
+        if i == 0:
+            return [num] + arr
+        return arr[:i] + [num] + arr[i:]
+    
+    def fix_invalid(self, pages):
+        new_arr = pages
+        for page in pages:
+            new_arr = self.place_behind(new_arr, page)
+        return new_arr
     
     def sum_middles(self, pages):
         summation = 0
         for arr in pages:
             summation += arr[len(arr) // 2]
         print(summation)
-        # 11886 too large!
-        # 6173 too large!
+        # 6401 too high!
+        # 6173 too high!
+        # 5936 is wrong
+        # 5100 too low!
                       
         
 if __name__ == "__main__":
     s = Solution(orders, pages)
     s.make_dict()
     s.remove_invalid()
-    s.sum_middles(s.safe_pages)
+    # s.sum_middles(s.safe_pages)
+    s.sum_middles(s.unsafe_pages)
